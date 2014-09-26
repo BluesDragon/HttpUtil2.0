@@ -43,7 +43,7 @@ public class HttpUtil {
 	 * @param url 请求地址
 	 * @param callBack 回调
 	 */
-	public <T> void get(String url, AjaxCallBack<T> callBack){
+	public <T> void get(String url, HttpCallBack<T> callBack){
 		get(url, callBack, false);
 	}
 	
@@ -54,7 +54,7 @@ public class HttpUtil {
 	 * @param callBack 回调
 	 * @param isNeedParse 是否需要解析
 	 */
-	public <T> void get(String url, AjaxCallBack<T> callBack, boolean isNeedParse){
+	public <T> void get(String url, HttpCallBack<T> callBack, boolean isNeedParse){
 		new HttpHandler<T>(callBack, isNeedParse, connectTimeout, readTimeout).executeOnExecutor(executor, url);
 	}
 	
@@ -140,7 +140,7 @@ public class HttpUtil {
 	 */
 	public class HttpHandler <T> extends AsyncTask<Object, Object, Object>{
 		
-		private final AjaxCallBack<T> callback;// 回调
+		private final HttpCallBack<T> callback;// 回调
 		private boolean isNeedParse = false; //是否需要解析
 		private int connectTimeout;// 连接超时时间
 		private int readTimeout;// 数据读取超时时间
@@ -153,7 +153,7 @@ public class HttpUtil {
 		 * @param connectTimeout 连接超时时间
 		 * @param readTimeout 数据读取超时时间
 		 */
-		public HttpHandler(AjaxCallBack<T> callback, boolean isNeedParse, int connectTimeout, int readTimeout){
+		public HttpHandler(HttpCallBack<T> callback, boolean isNeedParse, int connectTimeout, int readTimeout){
 			this.isNeedParse = isNeedParse;
 			this.callback = callback;
 			this.connectTimeout = connectTimeout;

@@ -43,8 +43,8 @@ public class HttpUtil {
 	 * @param url 请求地址
 	 * @param callBack 回调
 	 */
-	public <T> void get(String url, HttpCallBack<T> callBack){
-		get(url, callBack, false);
+	public <T> HttpHandler<T> get(String url, HttpCallBack<T> callBack){
+		return get(url, callBack, false);
 	}
 	
 	/**
@@ -54,8 +54,10 @@ public class HttpUtil {
 	 * @param callBack 回调
 	 * @param isNeedParse 是否需要解析
 	 */
-	public <T> void get(String url, HttpCallBack<T> callBack, boolean isNeedParse){
-		new HttpHandler<T>(callBack, isNeedParse, connectTimeout, readTimeout).executeOnExecutor(executor, url);
+	public <T> HttpHandler<T> get(String url, HttpCallBack<T> callBack, boolean isNeedParse){
+		HttpHandler<T> httpHandler = new HttpHandler<T>(callBack, isNeedParse, connectTimeout, readTimeout);
+		httpHandler.executeOnExecutor(executor, url);
+		return httpHandler;
 	}
 	
 	/**
@@ -144,6 +146,10 @@ public class HttpUtil {
 		private boolean isNeedParse = false; //是否需要解析
 		private int connectTimeout;// 连接超时时间
 		private int readTimeout;// 数据读取超时时间
+		private boolean isCancel = false;
+		public void cancel(){
+			isCancel = true;
+		}
 		
 		/**
 		 * HTTP请求处理者
@@ -194,9 +200,9 @@ public class HttpUtil {
 					}
 					if(isNeedParse){
 						Object obj = callback.onParse((String)sb.toString());
-						publishProgress(UPDATE_SUCCESS, obj);
+						publishProgress(UPDATE_SUCCESS, obj, isCancel);
 					}else {
-						publishProgress(UPDATE_SUCCESS, sb.toString());
+						publishProgress(UPDATE_SUCCESS, sb.toString(), isCancel);
 					}
 					conn.disconnect();
 				}
@@ -236,7 +242,7 @@ public class HttpUtil {
 				break;
 			case UPDATE_SUCCESS:
 				if(callback!=null)
-					callback.onSuccess((T)values[1]);
+					callback.onSuccess((T)values[1], (Boolean)values[2]);
 				break;
 			default:
 				break;

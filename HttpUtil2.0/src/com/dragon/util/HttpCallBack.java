@@ -35,7 +35,7 @@ public abstract class HttpCallBack<T> {
 	public void onStart(){};
 	
 	/** 请求成功 */
-	public void onSuccess(T result){};
+	public void onSuccess(T result, boolean isCancel){};
 	
 	/** 请求失败 */
 	public void onFailure(Throwable t, int errorNo, String strMsg){};

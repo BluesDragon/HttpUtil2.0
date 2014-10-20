@@ -57,4 +57,9 @@ public abstract class HttpCallBack<T> {
 	public Object onParse(String result){
 		return null;
 	};
+	
+	/**
+	 * 取消请求后的回调
+	 */
+	public void onCancel(){};
 }

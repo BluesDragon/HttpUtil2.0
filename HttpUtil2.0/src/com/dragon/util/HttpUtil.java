@@ -149,6 +149,7 @@ public class HttpUtil {
 		private boolean isCancel = false;
 		public void cancel(){
 			isCancel = true;
+			publishProgress(CANCEL); // 取消
 		}
 		
 		/**
@@ -223,6 +224,7 @@ public class HttpUtil {
 		private final static int UPDATE_LOADING = 2;
 		private final static int UPDATE_FAILURE = 3;
 		private final static int UPDATE_SUCCESS = 4;
+		private final static int CANCEL = 5;
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void onProgressUpdate(Object... values) {
@@ -243,6 +245,10 @@ public class HttpUtil {
 			case UPDATE_SUCCESS:
 				if(callback!=null)
 					callback.onSuccess((T)values[1], (Boolean)values[2]);
+				break;
+			case CANCEL:
+				if(callback!=null)
+					callback.onCancel();
 				break;
 			default:
 				break;
